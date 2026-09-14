@@ -402,6 +402,87 @@ def t_guard_candidates():
     assert g._fix("JoÃ£o") == "João" and g._fix("João") == "João"
 
 
+# ── 5. Send forecast ─────────────────────────────────────────────────────────
+FORECAST_SEQS = {
+    "main": {"_id": "main", "steps": [
+        {"_id": "s0", "sequenceStep": 0, "type": "email", "delay": 0},
+        {"_id": "s1", "sequenceStep": 1, "type": "email", "delay": 4},
+        {"_id": "s2", "sequenceStep": 2, "type": "email", "delay": 6},
+        {"_id": "s3", "sequenceStep": 3, "type": "conditional", "delay": 0}]},
+    "empty": {"_id": "empty", "parentId": "main", "conditionalStepId": "s3", "steps": []},
+    "branch": {"_id": "branch", "parentId": "main", "conditionalStepId": "s3", "steps": [
+        {"_id": "b0", "sequenceStep": 0, "type": "email", "delay": 7}]},
+}
+
+
+@case("forecast: delays in business days, a weekend shifts to Monday")
+def t_forecast_calendar():
+    import send_forecast as f
+    from datetime import date
+    assert f.add_business_days(date(2026, 9, 8), 4) == date(2026, 9, 14)    # Tue +4 → Sat → Mon
+    assert f.add_business_days(date(2026, 9, 14), 6) == date(2026, 9, 22)   # Mon +6 → Tue
+    assert f.add_business_days(date(2026, 9, 12), 0) == date(2026, 9, 14)   # Sat → Mon
+    assert f.business_days(date(2026, 9, 11), 3) == [date(2026, 9, 11), date(2026, 9, 14), date(2026, 9, 15)]
+
+
+@case("forecast: next email step, conditional branch followed, end of sequence")
+def t_forecast_steps():
+    import send_forecast as f
+    from datetime import date
+    wd = {1, 2, 3, 4, 5}
+    assert f.next_email_delay(FORECAST_SEQS, "main", 0) == 4
+    assert f.next_email_delay(FORECAST_SEQS, "main", 1) == 6
+    assert f.next_email_delay(FORECAST_SEQS, "main", 2) == 7          # through the non-empty branch
+    assert f.next_email_delay(FORECAST_SEQS, "branch", 0) is None
+    days = f.email_days(FORECAST_SEQS, "main", 1, date(2026, 9, 14), wd, date(2026, 10, 31))
+    assert days == [date(2026, 9, 22), date(2026, 10, 1)], days     # +6 business days, then +7
+    assert f.email_days(FORECAST_SEQS, "main", 1, date(2026, 9, 14), wd, date(2026, 9, 25)) == [date(2026, 9, 22)]
+
+
+@case("forecast: committed follow-ups, room left, steady plan that reserves its follow-ups")
+def t_forecast_plan():
+    import send_forecast as f
+    from datetime import date
+    today, wd = date(2026, 9, 15), {1, 2, 3, 4, 5}   # Tuesday
+    base = {"sequences": FORECAST_SEQS, "weekdays": wd, "sequence_id": "main", "step": 0,
+            "first_day": today}
+    leads = [
+        dict(base, last_day=date(2026, 9, 11), sender="a@x.com", senders=["a@x.com"]),   # Fri +4 → Thu 17, then Fri 25
+        dict(base, last_day=date(2026, 9, 4), sender="a@x.com", senders=["a@x.com"]),    # Thu 10 already past → today, then Fri 18
+        dict(base, last_day=None, sender="", senders=["a@x.com", "b@x.com"]),            # never sent: ½ per mailbox
+    ]
+    c = f.committed_sends(leads, today, date(2026, 10, 31))
+    assert c[("a@x.com", date(2026, 9, 17))] == 1 and c[("a@x.com", date(2026, 9, 18))] == 1, c
+    assert c[("a@x.com", today)] == 1.5 and c[("b@x.com", today)] == 0.5, c
+    boxes = [{"email": "a@x.com", "state": "ACTIVE", "warm_email_max": 14},
+             {"email": "b@x.com", "state": "RECOVERING", "warm_email_max": 14},
+             {"email": "r@x.com", "state": "RESTING", "warm_email_max": 14}]
+    days = f.business_days(today, 12)
+    room = f.room_by_day(c, boxes, days)
+    assert room[today]["room"] == (36 - 1.5) + 18, room[today]        # ACTIVE: cap minus committed; RECOVERING: half
+    assert room[today]["committed"] == 2 and room[today]["committed_resting"] == 0
+    # sustained rhythm: from the 4th business day, each day carries N new + N follow-ups (+3)
+    n, plan, binding = f.even_plan(room, days[:2], sequence=(0, 3))
+    assert (n, plan) == (26, {today: 26, days[1]: 26}), (n, plan)   # Tue 29: 52.5 of room for 2N
+    assert binding == date(2026, 9, 29), binding   # lead 2's +7 and lead 3's +6 land the same day
+    # Monday 21 already loaded: the rhythm drops for EVERY day
+    c[("a@x.com", date(2026, 9, 21))] += 30
+    room = f.room_by_day(c, boxes, days)
+    n, plan, binding = f.even_plan(room, days[:2], sequence=(0, 3))
+    assert (n, plan, binding) == (11, {today: 11, days[1]: 11}, date(2026, 9, 21)), (n, plan, binding)
+
+
+@case("settings: an operator rule is overridable through the environment, typed")
+def t_settings():
+    import os
+    os.environ["BOX_DAILY_CAP"] = "30"
+    try:
+        assert warmup.setting("BOX_DAILY_CAP", 50) == 30
+        assert warmup.setting("EMAILS_PER_LEAD", 3.5) == 3.5
+    finally:
+        del os.environ["BOX_DAILY_CAP"]
+
+
 def main() -> int:
     failed = 0
     for name, fn in CASES:

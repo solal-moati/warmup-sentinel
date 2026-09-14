@@ -55,13 +55,28 @@ LATEST_KEYS = [
     "last_warm_at", "warm_next_email_at", "spam_alert", "last_bounced",
 ]
 
+def setting(name: str, default):
+    """An operator rule, overridable through the environment or .env (same
+    type as the default). These are OUR operating rules, not provider
+    limits: adjust them to your setup without touching the code."""
+    from lib import env
+    raw = env.get(name, required=False).strip()
+    if not raw:
+        return default
+    try:
+        return type(default)(raw)
+    except ValueError:
+        raise SystemExit(f"{name}={raw!r} is not a valid {type(default).__name__}")
+
+
 # Rotation classification (operator decision, 2026-09-09: thresholds
 # recalibrated on the real score distribution, 78 to 87; a gate at 90 would
-# classify no mailbox at all).
+# classify no mailbox at all). Override: ACTIVE_MIN, RECOVERING_MIN,
+# QUARANTINE_INBOX_BELOW.
 WINDOW_DAYS = 7
-ACTIVE_MIN = 84
-RECOVERING_MIN = 80           # one reading below this = RESTING for 7 days
-QUARANTINE_INBOX_BELOW = 70   # veto on real placement, overrides the score
+ACTIVE_MIN = setting("ACTIVE_MIN", 84)
+RECOVERING_MIN = setting("RECOVERING_MIN", 80)     # one reading below = RESTING for 7 days
+QUARANTINE_INBOX_BELOW = setting("QUARANTINE_INBOX_BELOW", 70)   # veto on real placement
 
 # Anomaly checks (sentinel_report.py --check)
 COLLECT_STALE_H = 36
@@ -371,10 +386,11 @@ def delta_since(history: list, usm_id: str, field: str, now: datetime,
 # ── Send capacity ────────────────────────────────────────────────────────────
 # Operating rule: at most 50 emails per mailbox per day INCLUDING warmup;
 # RECOVERING mailboxes take new leads at half volume; one lead costs 3 to 4
-# emails on the same mailbox over its sequence (measured live).
-BOX_DAILY_CAP = 50
-TARGET_NEW_LEADS = 80
-EMAILS_PER_LEAD = 3.5
+# emails on the same mailbox over its sequence (measured live). Override:
+# BOX_DAILY_CAP, TARGET_NEW_LEADS, EMAILS_PER_LEAD.
+BOX_DAILY_CAP = setting("BOX_DAILY_CAP", 50)
+TARGET_NEW_LEADS = setting("TARGET_NEW_LEADS", 80)
+EMAILS_PER_LEAD = setting("EMAILS_PER_LEAD", 3.5)
 NEW_LEAD_SHARE = {"ACTIVE": 1.0, "RECOVERING": 0.5}
 
 

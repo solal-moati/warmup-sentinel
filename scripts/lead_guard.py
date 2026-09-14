@@ -38,7 +38,7 @@ from lib import config, env, warmup
 LEDGER = config.REPO_ROOT / "data" / "paused-leads.json"
 TEST_LEAD_DOMAINS = tuple(d.strip() for d in
                           os.environ.get("TEST_LEAD_DOMAINS", "").split(",") if d.strip())
-PAUSE_CAP = 10          # per-run cap: beyond it, something else is wrong
+PAUSE_CAP = warmup.setting("PAUSE_CAP", 10)   # per-run cap: beyond it, something else is wrong
 BAD = ("undeliverable",)     # never "risky": accepted mail, unconfirmed mailbox
 
 

@@ -24,6 +24,12 @@ sure we never miss it again.
   rolling 7-day window, and derives your **real send capacity**: how many new
   leads can go out today, follow-ups included (one lead ≈ 3.5 emails over its
   sequence).
+- **Forecasts the week**: reads every running campaign's steps, delays and
+  real sends, then shows, day by day, the follow-ups already committed per
+  mailbox and the largest steady number of new leads you can push without
+  exceeding any mailbox's cap, follow-ups included. The delay rule (lemlist
+  counts business days) is re-checked on your own past sends every run;
+  under 85% accuracy the plan is withheld rather than guessed.
 - **Decides**: leads whose address bounces or is undeliverable are paused
   automatically (at most 10 per run, never removed, never your test leads)
   and logged to `data/paused-leads.json`. A "risky" verdict alone never
@@ -57,6 +63,7 @@ sure we never miss it again.
    python3 capacity_ping.py --dry-run      # the morning ping, without posting
    python3 lead_guard.py                   # the guard, dry-run
    python3 sentinel_alerts.py              # the lemlist alerts, dry-run
+   python3 send_forecast.py                # committed follow-ups and the week's plan
    ```
    Only dependency: `pip install requests`.
 
@@ -66,6 +73,13 @@ your internal test leads, never paused) go in `.env` locally and in the
 repo's Actions variables for CI; `ALERT_EMAIL` (recipient of the lemlist
 alerts) is only needed locally, when you create the alerts with
 `sentinel_alerts.py --commit --only <rule>`.
+
+Operator rules are ours, not provider limits, and they are overridable the
+same way (see `.env.example`): `BOX_DAILY_CAP` (50 emails per mailbox per
+day, warmup included), `ACTIVE_MIN` / `RECOVERING_MIN` /
+`QUARANTINE_INBOX_BELOW` (84 / 80 / 70), `EMAILS_PER_LEAD` (3.5),
+`TARGET_NEW_LEADS` (80) and `PAUSE_CAP` (10). Four Microsoft mailboxes with a
+cap of 30? Two variables, no code change.
 
 ## What the agent refuses to do
 
