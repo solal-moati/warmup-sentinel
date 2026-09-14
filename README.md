@@ -24,9 +24,10 @@ sure we never miss it again.
   rolling 7-day window, and derives your **real send capacity**: how many new
   leads can go out today, follow-ups included (one lead ≈ 3.5 emails over its
   sequence).
-- **Decides**: leads whose address bounces or turns risky/undeliverable are
-  paused automatically (at most 10 per run, never removed, never your test
-  leads) and logged to `data/paused-leads.json`.
+- **Decides**: leads whose address bounces or is undeliverable are paused
+  automatically (at most 10 per run, never removed, never your test leads)
+  and logged to `data/paused-leads.json`. A "risky" verdict alone never
+  pauses anyone: the mail was accepted, the lead may still answer.
 - **Rings on changes, not on known states**: a stuck warmup or a blocklist
   listing rings once when it appears (on the first run, once for whatever is
   already listed), and again when it clears. Breakages (disconnected mailbox,

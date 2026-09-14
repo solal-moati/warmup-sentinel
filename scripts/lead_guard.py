@@ -6,9 +6,12 @@ every pause is printed in the run, appended to data/paused-leads.json
 (committed by the workflow) and summed up in the Monday digest.
 
 Triggers, on every running campaign:
-  · an inProgress lead whose emailStatus (lemlist verdict) is risky or
-    undeliverable;
+  · an inProgress lead whose emailStatus (lemlist verdict) is undeliverable
+    (the mailbox does not exist);
   · an inProgress lead whose last event is a bounce.
+A "risky" verdict alone never pauses: it means an unconfirmed mailbox on a
+catch-all domain, the email was accepted, and pausing it would lose a lead
+that may well answer.
 
 Never touched: internal test leads (TEST_LEAD_DOMAINS variable, comma
 separated), leads already logged, any done/paused/unsubscribed lead. Pause
@@ -36,7 +39,7 @@ LEDGER = config.REPO_ROOT / "data" / "paused-leads.json"
 TEST_LEAD_DOMAINS = tuple(d.strip() for d in
                           os.environ.get("TEST_LEAD_DOMAINS", "").split(",") if d.strip())
 PAUSE_CAP = 10          # per-run cap: beyond it, something else is wrong
-BAD = ("risky", "undeliverable")
+BAD = ("undeliverable",)     # never "risky": accepted mail, unconfirmed mailbox
 
 
 def _atomic_write(path, obj) -> None:

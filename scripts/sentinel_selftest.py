@@ -383,7 +383,7 @@ def t_header_migration():
 
 
 # ── 4. The lead guard ────────────────────────────────────────────────────────
-@case("lead guard: cap, reasons, already logged, test leads untouchable")
+@case("lead guard: cap, reasons, already logged, risky never paused")
 def t_guard_candidates():
     import lead_guard as g
     rows = [
@@ -392,11 +392,12 @@ def t_guard_candidates():
         {"_id": "d", "email": "z@a.com", "status": "inProgress", "emailStatus": "", "lastState": "emailsBounced"},
         {"_id": "e", "email": "k@a.com", "status": "inProgress", "emailStatus": "undeliverable", "lastState": "emailsSent"},
         {"_id": "f", "email": "m@a.com", "status": "inProgress", "emailStatus": "deliverable", "lastState": "emailsOpened"},
+        {"_id": "g", "email": "n@a.com", "status": "inProgress", "emailStatus": "undeliverable", "lastState": "emailsSent"},
     ]
     got = g.guard_candidates(rows, known_ids={"e"})
-    assert [r["_id"] for r in got] == ["a", "d"], got
-    assert got[0]["reason"] == "lemlist_risky" and got[1]["reason"] == "bounce", got
-    assert [r["_id"] for r in g.guard_candidates(rows, set(), cap=1)] == ["a"]
+    assert [r["_id"] for r in got] == ["d", "g"], got      # "a" (risky) stays in sequence
+    assert got[0]["reason"] == "bounce" and got[1]["reason"] == "lemlist_undeliverable", got
+    assert [r["_id"] for r in g.guard_candidates(rows, set(), cap=1)] == ["d"]
     assert g.guard_candidates(rows, set(), cap=0) == []
     assert g._fix("JoÃ£o") == "João" and g._fix("João") == "João"
 
