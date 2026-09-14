@@ -28,16 +28,19 @@ sure we never miss it again.
   paused automatically (at most 10 per run, never removed, never your test
   leads) and logged to `data/paused-leads.json`.
 - **Rings on changes, not on known states**: a stuck warmup or a blocklist
-  listing rings once when it appears, and again when it clears. Breakages
-  (disconnected mailbox, stale collection, API error) ring until fixed. On
-  Mondays, a six-line week-in-review.
+  listing rings once when it appears (on the first run, once for whatever is
+  already listed), and again when it clears. Breakages (disconnected mailbox,
+  stale collection, API error) ring until fixed. On Mondays, a six-line
+  week-in-review.
 - **Posts a morning ping** to your chat (Google Chat or Slack, plain incoming
   webhook): today's number, the mailbox states, and "nothing needed from you"
   or the one precise action.
 
 ## Setup (15 minutes)
 
-1. **Fork or clone** this repo, then in the repo's GitHub secrets
+1. **Fork or clone** this repo into a **private** repository: the workflow
+   commits `data/` (your mailbox addresses, their scores, the paused leads)
+   into it. Then in the repo's GitHub secrets
    (`Settings → Secrets and variables → Actions`):
    - `LEMLIST_API_KEY` — your lemlist API key;
    - `CHAT_WEBHOOK` — a Google Chat or Slack incoming-webhook URL
@@ -76,6 +79,21 @@ alerts) is only needed locally, when you create the alerts with
 - A run goes red on a change or a breakage; a known stall or listing does
   not ring again.
 
+## What it does not measure (yet)
+
+- **It reads lemwarm's thermometer, not your real sends.** The lemwarm score
+  follows warmup volume: a mailbox whose outgoing warmup stalls loses score
+  day after day even if its campaign emails still land. Bounce rate and
+  reply rate per mailbox, read from the campaign activities, are the next
+  signal to add.
+- **Capacity is a cruise-speed rule, not the room left today.** It does not
+  read the follow-ups already scheduled: the morning after a large push, the
+  number is optimistic.
+- **A domain blocklist listing is a signal, not a measured impact.** SURBL,
+  DBL and URIBL feed SpamAssassin-style filters; Gmail and Microsoft 365 run
+  their own reputation systems. The agent reports the listing, it does not
+  claim to know how much of your placement it costs.
+
 ## API facts learned in production (undocumented)
 
 - A nonexistent path answers **HTTP 200 + the app's HTML shell** instead of
@@ -97,8 +115,8 @@ alerts) is only needed locally, when you create the alerts with
 
 ## Hand your agent the first audit
 
-No install needed for a first diagnosis: paste this to an AI agent that can
-read your lemlist account (read-only API key).
+No install needed for a first diagnosis: paste this to an AI agent that
+holds your lemlist API key. The prompt itself forbids every write.
 
 ```text
 Audit our lemlist sending setup. Read-only: do not send messages, do not

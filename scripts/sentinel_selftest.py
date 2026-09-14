@@ -342,8 +342,12 @@ def t_listing_changes():
     changes = warmup.listing_changes(before, after)
     assert len(changes) == 1 and "b.com" in changes[0], changes
     assert warmup.listing_changes(after, after) == []
-    assert warmup.listing_changes(None, after) == []
     assert "left" in warmup.listing_changes(after, before)[0]
+    # first verifiable check (no reference yet): what is already listed rings once
+    first = warmup.listing_changes(None, after)
+    assert len(first) == 2 and all("first check" in c for c in first), first
+    assert warmup.listing_changes({"SURBL": {"usable": False}}, after) == first
+    assert warmup.listing_changes(None, {"SURBL": {"usable": False, "listed": {}}}) == []
     state = latest()
     state["listing_changes"] = changes
     assert hits(state, "b.com")

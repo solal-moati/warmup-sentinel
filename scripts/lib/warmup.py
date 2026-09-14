@@ -473,11 +473,16 @@ def listing_changes(reference, current) -> list:
     reference (the collector carries it from run to run, a "not verifiable"
     day never erases it), over the domains checked on both sides only. The
     CHANGE rings, not the state: otherwise a listed domain would turn the run
-    red every single day."""
+    red every single day. The first verifiable check of a list has no
+    reference: every domain already listed rings once, then never again."""
     out = []
     for name, cur in (current or {}).items():
         ref = (reference or {}).get(name) or {}
-        if not (cur.get("usable") and ref.get("usable")):
+        if not cur.get("usable"):
+            continue
+        if not ref.get("usable"):
+            out += [f"{d} is listed on {name} ({listing_label(name, c)}), first check"
+                    for d, c in sorted((cur.get("listed") or {}).items())]
             continue
         was, now_ = ref.get("listed") or {}, cur.get("listed") or {}
         scopes = [set(r["checked"]) for r in (cur, ref) if "checked" in r]

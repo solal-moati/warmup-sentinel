@@ -4,9 +4,11 @@ lead_guard.py).
 
 API facts verified in production (2026):
   · auth is HTTP basic with an empty username (":API_KEY");
-  · rate limit 20 req / 2s → 150ms client-side throttle + retries on 429/5xx;
+  · rate limit 20 req / 2s → 150ms client-side throttle + retries on 429/5xx,
+    all handled in _request();
   · lemlist sends a FRACTIONAL Retry-After on 429s ("0.429"), which crashes
-    urllib3's parser: the tolerant adapter below neutralizes it;
+    urllib3's header parser: urllib3's own retries are therefore disabled
+    (max_retries=0) and the Retry-After wait is parsed here, tolerantly;
   · a nonexistent path returns HTTP 200 + the app's HTML shell instead of a
     404: the status proves nothing, callers validate the CONTENT (see
     warmup.is_valid).
@@ -20,10 +22,8 @@ import time
 
 import requests
 from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from lib import config
-from lib._http import mount_retries
 
 logger = logging.getLogger("lemlist")
 
@@ -41,17 +41,6 @@ class LemlistAPIError(requests.exceptions.HTTPError):
         super().__init__(f"{status_code} on {endpoint}: {self.body[:300]}")
 
 
-class _FloatTolerantRetry(Retry):
-    def parse_retry_after(self, retry_after: str) -> float:
-        try:
-            return super().parse_retry_after(retry_after)
-        except Exception:
-            try:
-                return min(math.ceil(float(retry_after)), float(self.retry_after_max))
-            except (TypeError, ValueError):
-                return 1.0
-
-
 def _retry_after_seconds(resp, default: float) -> float:
     raw = resp.headers.get("Retry-After")
     if not raw:
@@ -65,10 +54,10 @@ def _retry_after_seconds(resp, default: float) -> float:
 class LemlistClient:
     def __init__(self, api_key: str):
         self.session = requests.Session()
-        mount_retries(self.session)
         self.session.auth = ("", api_key)
-        adapter = HTTPAdapter(max_retries=_FloatTolerantRetry(
-            total=0, read=False, redirect=False, respect_retry_after_header=False))
+        # No urllib3-level retry: its Retry-After parser would crash on
+        # lemlist's fractional values. _request() retries instead.
+        adapter = HTTPAdapter(max_retries=0)
         self.session.mount("https://", adapter)
         self.session.mount("http://", adapter)
         self._last_request = 0.0

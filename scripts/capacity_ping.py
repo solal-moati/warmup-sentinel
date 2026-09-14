@@ -53,6 +53,9 @@ def build_message() -> str:
                      "lemwarm_active": s.get("active")})
     cap = warmup.capacity(rows)
     states = Counter(r["state"] for r in rows)
+    if rows and states.get("UNKNOWN", 0) == len(rows):
+        return (f"📮 *{len(rows)} mailboxes found, no history yet.* The daily "
+                "collection has not run: the capacity figure starts tomorrow.")
     frozen = sorted(r["email"] for r in rows
                     if r["lemwarm_active"] and warmup.parse_ts(r["warm_next_email_at"])
                     and warmup.business_hours_between(
