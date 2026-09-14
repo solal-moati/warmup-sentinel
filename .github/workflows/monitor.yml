@@ -1,0 +1,84 @@
+name: Sentinel (deliverability monitor + guard)
+
+# Daily collection of the lemwarm mailboxes, lead guard, digest. The lemlist
+# API keeps no history: a day not collected is lost, hence the history commit
+# BEFORE the check (a red run never loses the day). A red run means a change
+# (stall, resumption, listing) or a breakage; a known stall or listing does
+# not ring again.
+# Note: GitHub crons often start 2 to 6 hours late.
+
+on:
+  schedule:
+    - cron: "35 6 * * *"
+  workflow_dispatch:
+    inputs:
+      test_alarm:
+        description: "Force the check to fail (test the alarm email)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sentinel-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: python3 -m pip install --quiet requests
+
+      - name: Collect lemwarm readings (read-only)
+        working-directory: scripts
+        env:
+          LEMLIST_API_KEY: ${{ secrets.LEMLIST_API_KEY }}
+          SITE_DOMAINS: ${{ vars.SITE_DOMAINS }}
+        run: python3 sentinel_collect.py
+
+      - name: Lead guard (capped pausing of dead addresses)
+        if: always()
+        working-directory: scripts
+        env:
+          LEMLIST_API_KEY: ${{ secrets.LEMLIST_API_KEY }}
+          TEST_LEAD_DOMAINS: ${{ vars.TEST_LEAD_DOMAINS }}
+        run: python3 lead_guard.py --commit
+
+      - name: Digest
+        if: always()
+        working-directory: scripts
+        run: python3 sentinel_report.py
+
+      - name: Commit the history (even when collection failed)
+        if: always()
+        run: |
+          git config user.name  "sentinel-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "chore: sentinel $(date +%F)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Guardrail selftest
+        if: always()
+        working-directory: scripts
+        run: python3 sentinel_selftest.py
+
+      - name: Check (red on change or breakage)
+        if: always()
+        working-directory: scripts
+        run: |
+          python3 sentinel_report.py --check \
+            ${{ inputs.test_alarm && '--fail-for-test' || '' }}

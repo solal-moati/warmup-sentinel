@@ -1,0 +1,37 @@
+name: Morning capacity ping (chat)
+
+# A few lines every weekday morning in your Google Chat or Slack: how many
+# new leads can go out today, the mailbox states, the watch items. Read-only.
+# The script always exits 0: no failure email for a comfort ping.
+
+on:
+  schedule:
+    - cron: "0 3 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sentinel-capacity
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: python3 -m pip install --quiet requests
+
+      - name: Capacity ping
+        working-directory: scripts
+        env:
+          LEMLIST_API_KEY: ${{ secrets.LEMLIST_API_KEY }}
+          CHAT_WEBHOOK: ${{ secrets.CHAT_WEBHOOK }}
+        run: python3 capacity_ping.py
