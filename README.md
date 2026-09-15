@@ -60,7 +60,7 @@ sure we never miss it again.
    cd scripts
    python3 sentinel_collect.py --dry-run   # reads the API, writes nothing
    python3 sentinel_report.py              # builds data/report.md
-   python3 sentinel_selftest.py            # 29 tests, one second
+   python3 sentinel_selftest.py            # 33 tests, one second
    python3 capacity_ping.py --dry-run      # the morning ping, without posting
    python3 lead_guard.py                   # the guard, dry-run
    python3 sentinel_alerts.py              # the lemlist alerts, dry-run
@@ -102,9 +102,10 @@ cap of 30? Two variables, no code change.
   day after day even if its campaign emails still land. Bounce rate and
   reply rate per mailbox, read from the campaign activities, are the next
   signal to add.
-- **Capacity is a cruise-speed rule, not the room left today.** It does not
-  read the follow-ups already scheduled: the morning after a large push, the
-  number is optimistic.
+- **The forecast is a high estimate by design.** It assumes every lead keeps
+  going through its sequence (no reply, no bounce) and that new leads split
+  evenly across the eligible mailboxes. Real sends come in a little lower;
+  the cap is never exceeded, the room is sometimes slightly underused.
 - **A domain blocklist listing is a signal, not a measured impact.** SURBL,
   DBL and URIBL feed SpamAssassin-style filters; Gmail and Microsoft 365 run
   their own reputation systems. The agent reports the listing, it does not
