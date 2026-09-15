@@ -52,8 +52,9 @@ sure we never miss it again.
    - `LEMLIST_API_KEY` — your lemlist API key;
    - `CHAT_WEBHOOK` — a Google Chat or Slack incoming-webhook URL
      (optional, for the morning ping).
-2. That's it: the workflows in `.github/workflows/` run daily (collection +
-   guard) and weekday mornings (capacity ping). The first run seeds `data/`.
+2. In the fork's **Actions** tab, enable the two workflows (GitHub keeps
+   scheduled workflows off on a fresh fork). They then run daily (collection
+   + guard) and weekday mornings (capacity ping). The first run seeds `data/`.
 3. Locally: copy `.env.example` to `.env`, then
    ```bash
    cd scripts

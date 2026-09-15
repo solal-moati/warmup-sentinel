@@ -26,6 +26,9 @@ concurrency:
 
 jobs:
   monitor:
+    # The template repo itself holds no API key: its crons stay silent.
+    # Your fork runs normally (enable the workflows in its Actions tab first).
+    if: github.repository != 'solal-moati/warmup-sentinel'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

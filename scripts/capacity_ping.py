@@ -91,7 +91,7 @@ def main() -> int:
     args = ap.parse_args()
     try:
         text = build_message()
-    except Exception as e:  # never a red run for a comfort ping
+    except (Exception, SystemExit) as e:  # never a red run for a comfort ping (missing key included)
         text = (f"⚠️ Capacity ping unavailable this morning ({type(e).__name__}); "
                 "the daily monitor is still in place.")
     print(text)
