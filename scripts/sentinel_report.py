@@ -137,7 +137,7 @@ def build_report(history: list, latest: dict, now) -> str:
     if frozen:
         out += ["", "**Outgoing warmup stuck** (already flagged, no longer turns the run "
                 "red; it will ring on resumption):", ""]
-        out += [f"- {boxes[m].get('email', m)}: next send scheduled {fmt_ts(t)}, never left"
+        out += [f"- {boxes[m].get('email', m)}: next send scheduled {fmt_ts(t)}, never left (lemwarm in answer-mode only: team setting \"Answer-mode only on high spam rate\")"
                 for m, t in sorted(frozen.items(), key=lambda kv: boxes[kv[0]].get("email", ""))]
 
     rows = box_rows(history, boxes, now)

@@ -120,8 +120,13 @@ cap of 30? Two variables, no code change.
   It follows warmup **volume** more than real health, hence the ranking's
   veto on actual placement.
 - A `warmNextEmailAt` frozen in the past = outgoing warmup stopped, even
-  while `lastWarmAt` keeps moving and the mailbox shows as active. lemlist
-  support confirmed such mailboxes had been paused by lemwarm itself.
+  while `lastWarmAt` keeps moving and the mailbox shows as active. The
+  cause, found by lemlist support after four days: the team setting
+  **"Answer-mode only on high spam rate"** (Warm up → Other settings) had
+  switched the mailboxes to answers only when their score dropped. It stops
+  the warmup without stopping the campaigns, and the score keeps falling
+  with the volume. Neither the setting nor the state is exposed by the API:
+  the frozen date is the only fingerprint.
 - lemwarm sends **no warmup on weekends** (confirmed by lemlist support): the
   freshness checks exclude Saturday and Sunday, otherwise every Monday rings
   falsely.

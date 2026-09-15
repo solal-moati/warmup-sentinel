@@ -20,7 +20,10 @@ API facts verified live, Sept 09-14 2026, on a real 16-mailbox account:
     runs on 7 days, never on a single day's value;
   · a warmNextEmailAt frozen in the past = outgoing warmup stopped (3
     mailboxes, Sept 01-04) while lastWarmAt keeps moving: that is the field
-    to test — the UI still shows the mailbox as "active";
+    to test, the UI still shows the mailbox as "active". Cause, found by
+    lemlist support: the team setting "Answer-mode only on high spam rate"
+    (Warm up → Other settings) switches a mailbox to answers only when its
+    score drops; neither the setting nor the state is exposed by the API;
   · lemwarm's blacklist check (blacklistsInfo) reported no listing while
     every sending domain sat on SURBL: it does not appear to cover domain
     blocklists, so SURBL, Spamhaus DBL and URIBL are checked here, over DNS.
@@ -563,7 +566,7 @@ def warmup_changes(previous: dict, boxes: dict, stamp: str) -> list:
     before = frozen_boxes(old, parse_ts((previous or {}).get("fetched_at")))
     now_ = frozen_boxes(boxes, parse_ts(stamp))
     email = {m: (boxes.get(m) or old.get(m) or {}).get("email", m) for m in set(before) | set(now_)}
-    out = [f"{email[m]}: outgoing warmup stuck, the send scheduled for {now_[m]} never left"
+    out = [f"{email[m]}: outgoing warmup stuck, the send scheduled for {now_[m]} never left (check lemwarm's team setting \"Answer-mode only on high spam rate\")"
            for m in sorted(set(now_) - set(before), key=email.get)]
     out += [f"{email[m]}: outgoing warmup resumed"
             for m in sorted(set(before) - set(now_), key=email.get)
