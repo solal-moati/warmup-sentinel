@@ -56,6 +56,17 @@ def build_message() -> str:
     if rows and states.get("UNKNOWN", 0) == len(rows):
         return (f"📮 *{len(rows)} mailboxes found, no history yet.* The daily "
                 "collection has not run: the capacity figure starts tomorrow.")
+    # Real forecast (follow-ups already scheduled, sustainable rhythm); the
+    # cruise-speed figure as a fallback. Never an error for a comfort ping.
+    fc = None
+    try:
+        import send_forecast
+        fc = send_forecast.forecast(client, now, rows)
+        if not fc["reliable"]:
+            fc = None
+    except Exception as e:
+        print(f"(forecast unavailable: {type(e).__name__}: {e})")
+    leads_today = fc["per_day"] if fc else cap["leads"]
     frozen = sorted(r["email"] for r in rows
                     if r["lemwarm_active"] and warmup.parse_ts(r["warm_next_email_at"])
                     and warmup.business_hours_between(
@@ -68,12 +79,16 @@ def build_message() -> str:
     # expected action.
     resting = states.get("RESTING", 0) + states.get("QUARANTINE", 0)
     lines = [
-        f"📮 *You can push ~{cap['leads']:.0f} new leads today.*",
+        f"📮 *You can push ~{leads_today:.0f} new leads today.*",
         "",
         f"✅ {states.get('ACTIVE', 0)} mailboxes at full volume"
         f"   🟡 {states.get('RECOVERING', 0)} at half volume"
         f"   ⛔ {resting} resting",
     ]
+    if fc:
+        when = "today" if fc["start"] == now.astimezone(fc["tz"]).date() else f"on {fc['start']:%d/%m} (next slot)"
+        lines.append(f"🔁 {fc['committed_start']:.0f} follow-ups already scheduled {when}, "
+                     "already counted in the number")
     watch = []
     if frozen:
         watch.append(f"• {len(frozen)} warmup(s) still stuck on lemlist's side")

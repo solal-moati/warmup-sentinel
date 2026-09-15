@@ -381,12 +381,54 @@ def render(days: list, horizon: list, room: dict, plan: dict, per_day: int, bind
     return "\n".join(out) + "\n"
 
 
+FORECAST_JSON = warmup.DATA_DIR / "forecast.json"
+
+
+def forecast(client, now: datetime, boxes: list, days_n: int = 5,
+             sequence=DEFAULT_SEQUENCE) -> dict:
+    """The whole computation in one call (read-only): committed follow-ups,
+    room, steady plan, reliability. `boxes`: [{email, state, warm_email_max}].
+    Used by this script, by the morning ping and by the workflow (--write)."""
+    leads, backtest, tz = collect(client, now)
+    local = now.astimezone(tz)
+    # first slot: today before 18:00 (lemlist window), otherwise the next business day
+    start = add_business_days(local.date() if local.hour < 18 else local.date() + timedelta(days=1), 0)
+    until = start + timedelta(days=HORIZON_DAYS)
+    days = business_days(start, days_n)
+    # the room must be known up to the last follow-up of the plan's leads
+    horizon = business_days(start, days_n + sum(sequence) + 1)
+    committed = committed_sends(leads, start, until)
+    room = room_by_day(committed, boxes, horizon)
+    per_day, plan, binding = even_plan(room, days, sequence)
+    pairs, exact = backtest
+    return {"leads": leads, "backtest": backtest, "tz": tz, "start": start, "days": days,
+            "horizon": horizon, "room": room, "plan": plan, "per_day": per_day,
+            "binding": binding, "sequence": sequence,
+            "reliable": not pairs or exact / pairs >= RELIABLE_MIN,
+            "committed_start": room[start]["committed"]}
+
+
+def to_json(f: dict, now: datetime) -> dict:
+    ok = f["reliable"]
+    return {"generated_at": warmup.iso(now), "start": f["start"].isoformat(), "reliable": ok,
+            "per_day": f["per_day"] if ok else None,
+            "committed_start": f["committed_start"],
+            "binding": f["binding"].isoformat() if f["binding"] and ok else None,
+            "binding_committed": f["room"][f["binding"]]["committed"] if f["binding"] and ok else None,
+            "days": [{"day": d.isoformat(), "committed": f["room"][d]["committed"],
+                      "room": f["room"][d]["room"], "plan": f["plan"][d] if ok else None}
+                     for d in f["days"]],
+            "backtest": {"pairs": f["backtest"][0], "exact": f["backtest"][1]}}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=5, help="business days to plan")
     ap.add_argument("--sequence", default=",".join(map(str, DEFAULT_SEQUENCE)),
                     help="delays between the emails of the campaign to come (e.g. 0,3,5,7)")
     ap.add_argument("--json", action="store_true", help="JSON output")
+    ap.add_argument("--write", action="store_true",
+                    help="write data/forecast.json (read by the Monday digest)")
     args = ap.parse_args()
     sequence = tuple(int(x) for x in args.sequence.split(",") if x.strip())
 
@@ -396,31 +438,16 @@ def main() -> int:
     if not boxes:
         print("data/latest.json missing or empty: run sentinel_collect.py first")
         return 1
-    leads, backtest, tz = collect(client, now)
-    local = now.astimezone(tz)
-    # first slot: today before 18:00 (lemlist window), otherwise the next business day
-    start = add_business_days(local.date() if local.hour < 18 else local.date() + timedelta(days=1), 0)
-    until = start + timedelta(days=HORIZON_DAYS)
-    days = business_days(start, args.days)
-    # the room must be known up to the last follow-up of the plan's leads
-    horizon = business_days(start, args.days + sum(sequence) + 1)
-    committed = committed_sends(leads, start, until)
-    room = room_by_day(committed, boxes, horizon)
-    per_day, plan, binding = even_plan(room, days, sequence)
-    pairs, exact = backtest
-    reliable = not pairs or exact / pairs >= RELIABLE_MIN
+    f = forecast(client, now, boxes, args.days, sequence)
     if args.json:
-        print(json.dumps({"generated_at": warmup.iso(now), "reliable": reliable,
-                          "per_day": per_day if reliable else None,
-                          "binding": binding.isoformat() if binding and reliable else None,
-                          "days": [{"day": d.isoformat(), "committed": room[d]["committed"],
-                                    "room": room[d]["room"],
-                                    "plan": plan[d] if reliable else None} for d in days],
-                          "backtest": {"pairs": pairs, "exact": exact}},
-                         ensure_ascii=False, indent=1))
+        print(json.dumps(to_json(f, now), ensure_ascii=False, indent=1))
     else:
-        print(render(days, horizon, room, plan, per_day, binding, boxes, sequence,
-                     backtest, len(leads), now, tz))
+        print(render(f["days"], f["horizon"], f["room"], f["plan"], f["per_day"], f["binding"],
+                     boxes, sequence, f["backtest"], len(f["leads"]), now, f["tz"]))
+    if args.write:
+        FORECAST_JSON.parent.mkdir(parents=True, exist_ok=True)
+        FORECAST_JSON.write_text(json.dumps(to_json(f, now), ensure_ascii=False, indent=1) + "\n")
+        print("written: data/forecast.json")
     return 0
 
 
