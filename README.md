@@ -45,16 +45,19 @@ sure we never miss it again.
 
 ## Setup (15 minutes)
 
-1. **Fork or clone** this repo into a **private** repository: the workflow
-   commits `data/` (your mailbox addresses, their scores, the paused leads)
-   into it. Then in the repo's GitHub secrets
+1. Click **Use this template → Create a new repository** and select
+   **Private**. A public fork stays public, so use a new private copy for
+   real data. The workflow commits `data/` (your mailbox addresses, their
+   scores, the paused leads) into it, and logs can contain operational data.
+   **Both workflows refuse to run in a public repository.** Keep your
+   working copy private after setup. Then in your private repo's GitHub secrets
    (`Settings → Secrets and variables → Actions`):
    - `LEMLIST_API_KEY` — your lemlist API key;
    - `CHAT_WEBHOOK` — a Google Chat or Slack incoming-webhook URL
      (optional, for the morning ping).
-2. In the fork's **Actions** tab, enable the two workflows (GitHub keeps
-   scheduled workflows off on a fresh fork). They then run daily (collection
-   + guard) and weekday mornings (capacity ping). The first run seeds `data/`.
+2. Open your private copy's **Actions** tab and enable the workflows if
+   GitHub asks. They run daily (collection + guard) and weekday mornings
+   (capacity ping). The first run seeds `data/`.
 3. Locally: copy `.env.example` to `.env`, then
    ```bash
    cd scripts
@@ -170,6 +173,12 @@ private.
    data you could not get. Recommend no setting change without an owner's
    approval.
 ```
+
+## Contributing
+
+Keep credentials and generated `data/` out of public contributions. See
+[CONTRIBUTING.md](CONTRIBUTING.md) to configure a GitHub `noreply` address
+and the local commit privacy check before publishing changes.
 
 ## License
 

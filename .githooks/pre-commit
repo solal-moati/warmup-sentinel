@@ -1,0 +1,12 @@
+#!/bin/sh
+# Git permanently records both addresses. Use a GitHub noreply identity.
+for identity_kind in GIT_AUTHOR_IDENT GIT_COMMITTER_IDENT; do
+    identity_value=$(git var "$identity_kind") || exit 1
+    case "$identity_value" in
+        *'@users.noreply.github.com>'*) ;;
+        *)
+            printf '%s\n' 'Commit blocked: configure your GitHub noreply email (see CONTRIBUTING.md).' >&2
+            exit 1
+            ;;
+    esac
+done
