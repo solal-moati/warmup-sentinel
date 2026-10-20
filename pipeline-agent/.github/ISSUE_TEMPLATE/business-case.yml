@@ -1,0 +1,40 @@
+name: Sales case
+description: Improve the review with a fictional sales situation. No coding required.
+title: "[Sales case] "
+body:
+  - type: markdown
+    attributes:
+      value: "Use fictional data only. Do not upload CRM exports, client messages, screenshots or credentials."
+  - type: textarea
+    id: situation
+    attributes:
+      label: What is happening in the deal?
+      description: Explain your sales cycle and what the current stage means.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: What facts are recorded, and what is missing?
+      description: Rewrite source excerpts using fictional names and dates.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should the rep see or have prepared?
+      description: Include plans and customer requests the agent must respect.
+    validations:
+      required: true
+  - type: textarea
+    id: next_review
+    attributes:
+      label: What should change at the next review?
+      description: Which new fact should bring the deal back to attention?
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Before submitting
+      options:
+        - label: This example contains fictional data and no client information or credentials.
+          required: true

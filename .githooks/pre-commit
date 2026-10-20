@@ -10,3 +10,11 @@ for identity_kind in GIT_AUTHOR_IDENT GIT_COMMITTER_IDENT; do
             ;;
     esac
 done
+
+# Scan the content actually staged for publication, with secrets redacted.
+scanner_path=$(command -v gitleaks || git config --local --get sentinel.gitleaksPath || true)
+if [ -z "$scanner_path" ] || [ ! -x "$scanner_path" ]; then
+    printf '%s\n' 'Commit blocked: install Gitleaks or configure sentinel.gitleaksPath (see CONTRIBUTING.md).' >&2
+    exit 1
+fi
+"$scanner_path" git --pre-commit --staged --redact=100 --no-banner || exit 1

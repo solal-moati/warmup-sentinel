@@ -1,5 +1,21 @@
 # warmup-sentinel
 
+Two tools to adapt to your sales workflow:
+
+| Tool | Start here | What it does |
+| --- | --- | --- |
+| Open pipeline agent | [Pipeline guide](pipeline-agent/README.md) | Review open deals, prepare next actions and remember what has already been reviewed. HubSpot connector and a neutral JSON import format. |
+| Email deliverability agent | Continue below | Monitor a lemlist + lemwarm setup and apply the configured protective rules. |
+
+**Here for the pipeline agent?** Open [its guide](pipeline-agent/README.md).
+Give Claude the link to that folder and ask it to help you get started.
+The pipeline demo runs locally with fictional data and no credentials.
+
+Contributions can start with a [fictional sales case](pipeline-agent/docs/business-case-template.md);
+you do not need to code. Keep real data in a private working copy.
+
+## Email deliverability agent
+
 An autonomous agent that watches the deliverability of a cold-email setup
 running on [lemlist](https://www.lemlist.com) + lemwarm, takes the protective
 decisions for you, and only speaks up to tell you what to do. Which is,

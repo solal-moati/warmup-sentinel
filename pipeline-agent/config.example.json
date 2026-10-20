@@ -1,0 +1,24 @@
+{
+  "pipeline_id": "REPLACE_PIPELINE_ID",
+  "stages": {
+    "REPLACE_OPEN_STAGE_ID_1": "Your first open stage",
+    "REPLACE_OPEN_STAGE_ID_2": "Another open stage"
+  },
+  "automation_sender_domains": [
+    "outbound.example.com"
+  ],
+  "hubspot_portal_id": null,
+  "indirect_context": false,
+  "context_confirmations": [],
+  "next_step_property": "hs_next_step",
+  "next_step_date_property": null,
+  "rules": {
+    "inactivity_days": 14,
+    "stage_age_days": 30
+  },
+  "stage_rules": {},
+  "schedule": {
+    "mode": "manual"
+  },
+  "stage_context": {}
+}

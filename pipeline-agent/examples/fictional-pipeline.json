@@ -1,0 +1,402 @@
+{
+  "fictional_example": true,
+  "as_of": "2026-09-28T12:00:00Z",
+  "records": [
+    {
+      "deal": {
+        "id": "fictional-001",
+        "properties": {
+          "dealname": "Projet exemple 01",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-09-30T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Revue sécurité"
+          }
+        ],
+        "notes": [],
+        "tasks": [
+          {
+            "hs_timestamp": "2026-09-24T12:00:00Z",
+            "hs_task_status": "NOT_STARTED",
+            "hs_task_subject": "Envoyer la fiche sécurité promise"
+          }
+        ]
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-002",
+        "properties": {
+          "dealname": "Projet exemple 02",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          },
+          {
+            "hs_timestamp": "2026-09-27T12:00:00Z",
+            "hs_email_direction": "INCOMING_EMAIL",
+            "hs_email_subject": "Calendrier du projet",
+            "hs_email_text": "Nous avons reporté notre décision. Pouvez-vous reprendre contact en novembre ?"
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-003",
+        "properties": {
+          "dealname": "Projet exemple 03",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-10-01T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Validation des critères"
+          }
+        ],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-004",
+        "properties": {
+          "dealname": "Projet exemple 04",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-005",
+        "properties": {
+          "dealname": "Projet exemple 05",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-09-30T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Revue sécurité"
+          }
+        ],
+        "notes": [],
+        "tasks": [
+          {
+            "hs_timestamp": "2026-09-24T12:00:00Z",
+            "hs_task_status": "NOT_STARTED",
+            "hs_task_subject": "Envoyer la fiche sécurité promise"
+          }
+        ]
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-006",
+        "properties": {
+          "dealname": "Projet exemple 06",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          },
+          {
+            "hs_timestamp": "2026-09-27T12:00:00Z",
+            "hs_email_direction": "INCOMING_EMAIL",
+            "hs_email_subject": "Calendrier du projet",
+            "hs_email_text": "Nous avons reporté notre décision. Pouvez-vous reprendre contact en novembre ?"
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-007",
+        "properties": {
+          "dealname": "Projet exemple 07",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-10-01T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Validation des critères"
+          }
+        ],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-008",
+        "properties": {
+          "dealname": "Projet exemple 08",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-009",
+        "properties": {
+          "dealname": "Projet exemple 09",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-09-30T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Revue sécurité"
+          }
+        ],
+        "notes": [],
+        "tasks": [
+          {
+            "hs_timestamp": "2026-09-24T12:00:00Z",
+            "hs_task_status": "NOT_STARTED",
+            "hs_task_subject": "Envoyer la fiche sécurité promise"
+          }
+        ]
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-010",
+        "properties": {
+          "dealname": "Projet exemple 10",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          },
+          {
+            "hs_timestamp": "2026-09-27T12:00:00Z",
+            "hs_email_direction": "INCOMING_EMAIL",
+            "hs_email_subject": "Calendrier du projet",
+            "hs_email_text": "Nous avons reporté notre décision. Pouvez-vous reprendre contact en novembre ?"
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-011",
+        "properties": {
+          "dealname": "Projet exemple 11",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [
+          {
+            "hs_meeting_start_time": "2026-10-01T10:00:00Z",
+            "hs_meeting_outcome": "SCHEDULED",
+            "hs_meeting_title": "Validation des critères"
+          }
+        ],
+        "notes": [],
+        "tasks": []
+      }
+    },
+    {
+      "deal": {
+        "id": "fictional-012",
+        "properties": {
+          "dealname": "Projet exemple 12",
+          "pipeline": "example",
+          "dealstage": "evaluation",
+          "hs_v2_date_entered_evaluation": "2026-08-01T12:00:00Z",
+          "hs_next_step": ""
+        }
+      },
+      "engagements": {
+        "emails": [
+          {
+            "hs_timestamp": "2026-09-01T12:00:00Z",
+            "hs_email_direction": "EMAIL",
+            "hs_email_status": "SENT",
+            "hs_email_subject": "Point sur votre évaluation",
+            "hs_email_text": "Voici les éléments demandés."
+          }
+        ],
+        "calls": [],
+        "meetings": [],
+        "notes": [],
+        "tasks": []
+      }
+    }
+  ]
+}

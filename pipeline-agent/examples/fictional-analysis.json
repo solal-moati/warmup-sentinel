@@ -1,0 +1,50 @@
+[
+  {
+    "deal_id": "demo-001",
+    "dealname": "Example Demo Deal",
+    "stage": "Évaluation technique",
+    "bucket": "stalled_post_meeting",
+    "current_next_step": null,
+    "signals": {
+      "days_in_stage": 32,
+      "days_since_personal_touch": 24,
+      "had_meeting_ever": true,
+      "engagement_counts": {},
+      "lemlist_email_count": 0
+    },
+    "suggested_next_step": "Contact the buyer within three business days to confirm the evaluation criteria discussed at the demo.",
+    "fictional_example": true
+  },
+  {
+    "deal_id": "demo-002",
+    "dealname": "Example Recent Deal",
+    "stage": "Projet identifié",
+    "bucket": "recent_activity_no_step_recorded",
+    "current_next_step": null,
+    "signals": {
+      "days_in_stage": 7,
+      "days_since_personal_touch": 3,
+      "had_meeting_ever": true,
+      "engagement_counts": {},
+      "lemlist_email_count": 0
+    },
+    "suggested_next_step": "Review the technical review already agreed with the buyer before preparing another follow-up.",
+    "fictional_example": true
+  },
+  {
+    "deal_id": "demo-003",
+    "dealname": "Example Unclear Deal",
+    "stage": "Validation achats",
+    "bucket": "unclear",
+    "current_next_step": null,
+    "signals": {
+      "days_in_stage": 45,
+      "days_since_personal_touch": null,
+      "had_meeting_ever": true,
+      "engagement_counts": {},
+      "lemlist_email_count": 0
+    },
+    "suggested_next_step": "Review manually: the latest buyer response is missing from the CRM.",
+    "fictional_example": true
+  }
+]

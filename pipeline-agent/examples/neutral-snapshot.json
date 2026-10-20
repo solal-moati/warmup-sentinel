@@ -1,0 +1,53 @@
+{
+  "schema_version": "1",
+  "source": "fictional-custom-crm",
+  "as_of": "2026-10-13T18:00:00Z",
+  "complete": true,
+  "expected_deals": 3,
+  "fictional_example": true,
+  "rules": {"inactivity_days": 14, "stage_age_days": 30},
+  "stage_rules": {"technical-review": {"inactivity_days": 28}},
+  "deals": [
+    {
+      "id": "fictional-security",
+      "name": "Exemple fictif : document promis",
+      "status": "open",
+      "stage_id": "technical-review",
+      "stage_label": "Validation technique",
+      "stage_context": "Le client vérifie les contraintes de déploiement avant son pilote.",
+      "coverage": "direct",
+      "entered_stage_at": "2026-09-23T09:00:00Z",
+      "next_step": {"text": "Envoyer le schéma de déploiement demandé", "due_at": "2026-10-12T16:00:00Z"},
+      "events": [
+        {"id": "security-note", "kind": "note", "association": "direct", "at": "2026-10-09T14:00:00Z", "text": "L'équipe sécurité attend le schéma de déploiement avant de valider le pilote."},
+        {"id": "security-call", "kind": "call", "association": "direct", "at": "2026-10-09T13:00:00Z", "status": "completed", "title": "Conditions du pilote"}
+      ]
+    },
+    {
+      "id": "fictional-budget",
+      "name": "Exemple fictif : demande de report",
+      "status": "open",
+      "stage_id": "business-case",
+      "stage_label": "Étude du budget",
+      "coverage": "direct",
+      "entered_stage_at": "2026-09-15T09:00:00Z",
+      "events": [
+        {"id": "budget-out", "kind": "email", "association": "direct", "at": "2026-10-01T09:00:00Z", "direction": "outbound", "status": "sent", "automated": false, "title": "Votre arbitrage", "text": "Avez-vous pu regarder les deux options ?"},
+        {"id": "budget-in", "kind": "email", "association": "direct", "at": "2026-10-02T10:00:00Z", "direction": "inbound", "status": "received", "automated": false, "title": "Re: Votre arbitrage", "text": "Notre décision est reportée. Merci de ne pas nous recontacter avant novembre."}
+      ]
+    },
+    {
+      "id": "fictional-meeting",
+      "name": "Exemple fictif : rendez-vous déjà prévu",
+      "status": "open",
+      "stage_id": "decision",
+      "stage_label": "Décision collective",
+      "coverage": "direct",
+      "entered_stage_at": "2026-09-20T09:00:00Z",
+      "next_step": {"text": "Valider le périmètre au prochain rendez-vous", "due_at": "2026-10-20T09:00:00Z"},
+      "events": [
+        {"id": "decision-meeting", "kind": "meeting", "association": "direct", "at": "2026-10-20T09:00:00Z", "status": "scheduled", "title": "Validation du périmètre"}
+      ]
+    }
+  ]
+}

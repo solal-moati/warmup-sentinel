@@ -1,0 +1,24 @@
+{
+  "schedule": {
+    "mode": "scheduled",
+    "timezone": "Europe/Paris",
+    "analysis": [
+      {
+        "weekdays": [
+          1,
+          3
+        ],
+        "at": "16:15"
+      }
+    ],
+    "delivery": [
+      {
+        "weekdays": [
+          1,
+          3
+        ],
+        "at": "16:45"
+      }
+    ]
+  }
+}

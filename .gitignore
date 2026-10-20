@@ -3,3 +3,13 @@
 !.env.example
 __pycache__/
 *.pyc
+.DS_Store
+*.log
+pipeline-agent/config.json
+pipeline-agent/output/
+pipeline-agent/dist/
+pipeline-agent/.venv/
+pipeline-agent/*memory*.json
+pipeline-agent/analysis*.json
+pipeline-agent/*proposals*.json
+pipeline-agent/*decisions*.json
