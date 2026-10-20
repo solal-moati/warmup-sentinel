@@ -115,8 +115,8 @@ Une date inconnue reste inconnue.
 
 ## Contribuer sans être développeur
 
-Utiliser [le modèle de cas métier](business-case-template.md), ou l’issue « Sales
-case » quand ce dossier sera publié comme dépôt indépendant. Un mainteneur traduit
+Utiliser [le modèle de cas métier](business-case-template.md), ou le formulaire
+d’issue « Sales case » du repo warmup-sentinel. Un mainteneur traduit
 le cas en `examples/community-case-*.json`. La suite de tests charge ces fichiers
 automatiquement et vérifie les groupes et préparations attendus.
 

@@ -6,8 +6,8 @@ respecting the way each team works.
 
 ## Start with a sales case
 
-Use the [six-question template](docs/business-case-template.md). The GitHub issue
-form is included for a standalone repository. Executable cases named
+Use the [six-question template](docs/business-case-template.md) or the repository's
+**Sales case** issue form. Executable cases named
 `examples/community-case-*.json` are discovered automatically by the offline tests.
 
 Describe the situation, the facts the CRM contains, what the review returned and what
